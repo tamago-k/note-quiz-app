@@ -1,0 +1,30 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3001:3001"
+    working_dir: /app
+    environment:
+      - RAILS_ENV=development
+      - DATABASE_URL=sqlite3:db/development.sqlite3
+    command: rails server -b 0.0.0.0 -p 3001
