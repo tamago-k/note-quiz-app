@@ -5,7 +5,7 @@ return [
 
     'allowed_methods' => explode(',', env('CORS_ALLOWED_METHODS', '*')),
 
-    'allowed_origins' => explode(',', env('FRONTEND_URL')),
+    'allowed_origins' => explode(',', env('APP_URL')),
 
     'allowed_origins_patterns' => [],
 
