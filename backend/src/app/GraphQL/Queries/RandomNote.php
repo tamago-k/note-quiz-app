@@ -34,8 +34,7 @@ class RandomNote
 
     public function __invoke($_, array $args)
     {
-        $notes = [...]; // 問題配列
-        $selected = $notes[array_rand($notes)];
+        $selected = $this->notes[array_rand($this->notes)];
 
         return $selected;
     }

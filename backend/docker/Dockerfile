@@ -11,7 +11,7 @@ WORKDIR /var/www
 
 COPY ./src . 
 
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev 
 
 # Laravel サーバを起動
 CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8000}

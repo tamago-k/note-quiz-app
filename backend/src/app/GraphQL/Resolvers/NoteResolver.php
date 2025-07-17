@@ -40,7 +40,6 @@ class NoteResolver
     {
         $selected = $this->notes[array_rand($this->notes)];
 
-        // 正解情報をセッションに保存
         session(['correct_note' => $selected['note']]);
         session(['correct_clef' => $selected['clef']]); 
 
@@ -52,12 +51,10 @@ class NoteResolver
         $correctNote = session('correct_note');
         $correctClef = session('correct_clef');
 
-        // 正解ノートがセッションにない場合は不正解
         if (!$correctNote) {
             return false;
         }
 
-        // 例：noteだけ比較（必要ならclefも比較）
         return strtoupper($args['note']) === strtoupper($correctNote);
     }
 }
