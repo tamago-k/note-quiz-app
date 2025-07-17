@@ -24,7 +24,6 @@ const ANSWER_NOTE_MUTATION = gql`
 
 export default function NoteGame() {
   const { data, loading, error, refetch } = useQuery(RANDOM_NOTE_QUERY, { client });
-  const [answerNote] = useMutation(ANSWER_NOTE_MUTATION, { client });
   const [feedback, setFeedback] = useState<string | null>(null);
   const divRef = useRef<HTMLDivElement>(null);
 
