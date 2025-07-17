@@ -1,95 +1,122 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useState, useEffect, useRef } from "react";
+import { gql, useQuery, useMutation } from "@apollo/client";
+import client from "../lib/apolloClient";
+import { Renderer, Stave, StaveNote, Formatter } from "vexflow";
+
+const RANDOM_NOTE_QUERY = gql`
+  query {
+    randomNote {
+      clef
+      note
+      octave
+      position
+    }
+  }
+`;
+
+const ANSWER_NOTE_MUTATION = gql`
+  mutation AnswerNote($note: String!) {
+    answerNote(note: $note)
+  }
+`;
+
+export default function NoteGame() {
+  const { data, loading, error, refetch } = useQuery(RANDOM_NOTE_QUERY, { client });
+  const [answerNote] = useMutation(ANSWER_NOTE_MUTATION, { client });
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const handleAnswer = async (selectedNote: string) => {
+    const correctNote = localStorage.getItem('correct_note');
+    if (correctNote && selectedNote.toUpperCase() === correctNote.toUpperCase()) {
+      setFeedback("正解！");
+
+      setTimeout(() => {
+        setFeedback(null);
+
+        refetch();
+      }, 1500);
+
+    } else {
+      setFeedback("不正解..もう一度");
+    }
+  };
+
+  // VexFlow描画処理
+  useEffect(() => {
+
+    if (data?.randomNote) {
+      const correctNote = data.randomNote.note;
+      localStorage.setItem('correct_note', correctNote);
+    }
+
+    if (!data?.randomNote || !divRef.current) return;
+
+    divRef.current.innerHTML = "";
+
+    const renderer = new Renderer(divRef.current, Renderer.Backends.SVG);
+    renderer.resize(300, 200);
+    const context = renderer.getContext();
+
+    const stave = new Stave(10, 0, 120);
+    context.scale(2, 2);
+    stave.addClef(data.randomNote.clef === "treble" ? "treble" : "bass");
+    stave.setContext(context).draw();
+
+    const note = new StaveNote({
+      keys: [convertToVexflowKey(data.randomNote.note, data.randomNote.clef, data.randomNote.position)],
+      duration: "q",
+      clef: data.randomNote.clef,
+    });
+
+    // 👇 Formatter で位置決めを行ってから描画！
+    Formatter.FormatAndDraw(context, stave, [note]);
+
+  }, [data]);
+
+  // VexFlowが期待する音名変換関数
+  function convertToVexflowKey(note: string, clef: string, position: number): string {
+    let baseOctave = clef === 'treble' ? 4 : 3; // ト音記号は4、ヘ音記号は3を基準に
+    if (position >= 7) {
+      baseOctave += 1; // 2オクターブ目は1オクターブ足す
+    }
+    return note.toLowerCase() + "/" + baseOctave;
+  }
+
+  if (loading) return <p>読み込み中...</p>;
+  if (error) return <p>エラーが発生しました: {error.message}</p>;
+
+  const notes = [
+    { letter: "C", japanese: "ド" },
+    { letter: "D", japanese: "レ" },
+    { letter: "E", japanese: "ミ" },
+    { letter: "F", japanese: "ファ" },
+    { letter: "G", japanese: "ソ" },
+    { letter: "A", japanese: "ラ" },
+    { letter: "B", japanese: "シ" },
+  ];
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="note-wrap">
+      <h1>音符当てゲーム</h1>
+      {/* VexFlow描画用のdiv */}
+      <div className="note-line" ref={divRef}></div>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <div className="note-button-wrap">
+        {notes.map(({ letter, japanese }) => (
+          <button className="note-button" key={letter} onClick={() => handleAnswer(letter)} style={{ margin: 5 }}>
+            {japanese} 
+            <br />
+            {letter}
+          </button>
+        ))}
+      </div>
+
+      <div className="feedback">
+        {feedback && <p>{feedback}</p>}
+      </div>
     </div>
   );
 }

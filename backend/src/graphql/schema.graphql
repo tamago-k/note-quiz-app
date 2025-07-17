@@ -1,0 +1,14 @@
+type Note {
+    clef: String!
+    note: String!
+    position: Int!
+    octave: Int!
+}
+
+type Query {
+    randomNote: Note! @field(resolver: "App\\GraphQL\\Resolvers\\NoteResolver@randomNote")
+}
+
+type Mutation {
+    answerNote(note: String!): Boolean! @field(resolver: "App\\GraphQL\\Resolvers\\NoteResolver@answerNote")
+}

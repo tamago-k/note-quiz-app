@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru&display=swap');
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -22,6 +24,15 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: "DotGothic16", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+h1,h2,h3,p,button {
+  font-family: "Kiwi Maru", serif;
+  font-weight: 500;
+  font-style: normal;
 }
 
 * {
@@ -39,4 +50,45 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+h1 {
+  text-align: center;
+}
+
+.note-wrap {
+  max-width: 800px;
+  width: 100%;
+  margin: auto;
+  padding: 50px 0 0;
+}
+
+.note-line {
+  text-align: center;
+}
+
+.note-button-wrap {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.note-button {
+  width: 80px;
+  height: 80px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 2px solid #000;
+  background-color: #fff;
+  color: #000;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.2;
+}
+
+.feedback p {
+  text-align: center;
+  font-size: 20px;
+  margin: 40px auto;
 }
