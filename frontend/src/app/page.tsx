@@ -92,23 +92,25 @@ export default function NoteGame() {
   ];
 
   return (
-    <div className="note-wrap">
-      <h1>音符当てゲーム</h1>
-      {/* VexFlow描画用のdiv */}
-      <div className="note-line" ref={divRef}></div>
+    <div className="note">
+      <div className="note-wrap">
+        <h1>音符当てゲーム</h1>
+        {/* VexFlow描画用のdiv */}
+        <div className="note-line" ref={divRef}></div>
 
-      <div className="note-button-wrap">
-        {notes.map(({ letter, japanese }) => (
-          <button className="note-button" key={letter} onClick={() => handleAnswer(letter)} style={{ margin: 5 }}>
-            {japanese} 
-            <br />
-            {letter}
-          </button>
-        ))}
-      </div>
+        <div className="note-button-wrap">
+          {notes.map(({ letter, japanese }) => (
+            <button className="note-button" key={letter} onClick={() => handleAnswer(letter)} style={{ margin: 5 }}>
+              {japanese} 
+              <br />
+              {letter}
+            </button>
+          ))}
+        </div>
 
-      <div className="feedback">
-        {feedback && <p>{feedback}</p>}
+        <div className="feedback">
+          {feedback && <p>{feedback}</p>}
+        </div>
       </div>
     </div>
   );
