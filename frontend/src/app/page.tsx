@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { gql, useQuery } from "@apollo/client";
 import client from "../lib/apolloClient";
 import { Renderer, Stave, StaveNote, Formatter } from "vexflow";
 
