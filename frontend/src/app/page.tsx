@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
 import client from "../lib/apolloClient";
 import { Renderer, Stave, StaveNote, Formatter } from "vexflow";
 
@@ -13,12 +12,6 @@ const RANDOM_NOTE_QUERY = gql`
       octave
       position
     }
-  }
-`;
-
-const ANSWER_NOTE_MUTATION = gql`
-  mutation AnswerNote($note: String!) {
-    answerNote(note: $note)
   }
 `;
 
