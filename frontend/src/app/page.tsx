@@ -72,12 +72,20 @@ export default function NoteGame() {
 
   }, [data]);
 
-  // VexFlowが期待する音名変換関数
   function convertToVexflowKey(note: string, clef: string, position: number): string {
-    let baseOctave = clef === 'treble' ? 4 : 3; // ト音記号は4、ヘ音記号は3を基準に
-    if (position >= 7) {
-      baseOctave += 1; // 2オクターブ目は1オクターブ足す
+    let baseOctave: number;
+
+    if (clef === 'treble') {
+      // ト音記号は position=0→C3、7→C4、14→C5 のイメージ
+      baseOctave = 3 + Math.floor(position / 7);
+    } else if (clef === 'bass') {
+      // ヘ音記号は position=0→C2、7→C3、14→C4 に合わせる
+      baseOctave = 2 + Math.floor(position / 7);
+    } else {
+      // 予備: clef不明時は3固定など
+      baseOctave = 3 + Math.floor(position / 7);
     }
+
     return note.toLowerCase() + "/" + baseOctave;
   }
 
