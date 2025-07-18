@@ -34,6 +34,9 @@ export default function NoteGame() {
 
     } else {
       setFeedback("不正解..もう一度");
+      setTimeout(() => {
+        setFeedback(null);
+      }, 1000);
     }
   };
 
@@ -60,7 +63,7 @@ export default function NoteGame() {
 
     const note = new StaveNote({
       keys: [convertToVexflowKey(data.randomNote.note, data.randomNote.clef, data.randomNote.position)],
-      duration: "q",
+      duration: "w",
       clef: data.randomNote.clef,
     });
 
@@ -108,9 +111,13 @@ export default function NoteGame() {
           ))}
         </div>
 
-        <div className="feedback">
-          {feedback && <p>{feedback}</p>}
-        </div>
+        {feedback && (
+          <p
+            className={`feedback ${feedback === "正解！" ? "correct" : ""}`}
+          >
+            {feedback}
+          </p>
+        )}
       </div>
     </div>
   );
